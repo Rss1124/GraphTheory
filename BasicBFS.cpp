@@ -1,27 +1,27 @@
 #include <iostream>
-
+#include <queue>
 using namespace std;
 
-/** 邻接表 **/
 typedef struct Array{
     int arrayE[255];
     int length=0;
     bool flag=false;
 }Array;
 
-void displayAdjacencyList(Array arrayV[],int length);
 void adjacencyList();
-bool dfsAdjacencyList(Array arrayV[],int num); //(有向图&&无向图)邻接表的DFS
-void displayAdjacencyMatrix(int **arrayV,int length);
 void adjacencyMatrix();
-bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num); //(有向图&&无向图)邻接矩阵的DFS
+void displayAdjacencyMatrix(int **arrayV,int length);
+void displayAdjacencyList(Array arrayV[],int length);
+void bfsAdjacencyList(Array arrayV[],queue<int> &q);
+void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c);
 
-int main() {
-    adjacencyList();
-//    adjacencyMatrix();
+int main(){
+//    adjacencyList();
+    adjacencyMatrix();
 }
 
 void adjacencyList(){
+    queue<int> queue_List;
     Array arrayV[255];
     int numV;
     cout<<"输入顶点个数:";
@@ -42,17 +42,26 @@ void adjacencyList(){
     displayAdjacencyList(arrayV,numV);
     cout<<"邻接表生成完毕！"<<endl;
     for(int i=0;i<numV;i++){
-        dfsAdjacencyList(arrayV,i);
+        if(arrayV[i].flag==false){
+            queue_List.push(i);
+            arrayV[i].flag=true;
+            bfsAdjacencyList(arrayV,queue_List);
+        }
     }
 }
 
-bool dfsAdjacencyList(Array arrayV[],int num){
-    if(arrayV[num].flag==true) return false;
-    if(arrayV[num].flag==false){
-        cout<<num;
-        arrayV[num].flag=true;
-        for(int i=0;i<arrayV[num].length;i++){
-            dfsAdjacencyList(arrayV,arrayV[num].arrayE[i]);
+void bfsAdjacencyList(Array arrayV[],queue<int> &q){
+    while(q.empty()==false){
+        int temp=q.front();
+        q.pop();
+        cout<<temp;
+        if(arrayV[temp].length!=0){
+            for(int i=0;i<arrayV[temp].length;i++){
+                if(arrayV[arrayV[temp].arrayE[i]].flag==false){
+                    q.push(arrayV[temp].arrayE[i]);
+                    arrayV[arrayV[temp].arrayE[i]].flag=true;
+                }
+            }
         }
     }
 }
@@ -67,12 +76,12 @@ void displayAdjacencyList(Array arrayV[],int length){
     }
 }
 
-
 void adjacencyMatrix(){
     int numV;
     int **arrayV;
     int flag=1;
     bool *arrayFlag;
+    queue<int> queue_List;
     cout<<"输入顶点个数:";
     cin>>numV;
     arrayFlag = new bool[numV]{};
@@ -92,20 +101,30 @@ void adjacencyMatrix(){
     displayAdjacencyMatrix(arrayV,numV);
     cout<<"邻接矩阵生成完毕！"<<endl;
     for(int i=0;i<numV;i++){
-        if(arrayFlag[i]==false) cout<<i;
-        for(int j=0;j<numV;j++){
-            if(i!=j) dfsAdjacencyMatrix(arrayV,i,j,arrayFlag,numV);
+        if(arrayFlag[i]==false){
+            queue_List.push(i);
+            arrayFlag[i]==true;
         }
+//        for(int j=0;j<numV;j++){
+//            if(i!=j&&arrayV[i][j]==1&&arrayFlag[j]==false){
+//                queue_List.push(j);
+//                arrayFlag[j]==true;
+//            }
+//        }
+        bfsAdjacencyMatrix(arrayV,arrayFlag,queue_List,numV);
     }
 }
 
-bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num){
-    if(arrayV[r][c]==0||arrayFlag[c]==true) return false;
-    if(arrayV[r][c]==1){
-        arrayFlag[c]=true;
-        cout<<c;
-        for(int i=0;i<num;i++){
-            dfsAdjacencyMatrix(arrayV,c,i,arrayFlag,num);
+void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c){
+    while(q.empty()!=true){
+        int temp=q.front();
+        cout<<temp;
+        q.pop();
+        for(int i=0;i<c;i++){
+            if(temp!=i&&arrayV[temp][i]==1&&arrayFlag[i]==false){
+                q.push(i);
+                arrayFlag[i]=true;
+            }
         }
     }
 }
