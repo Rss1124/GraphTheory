@@ -103,14 +103,8 @@ void adjacencyMatrix(){
     for(int i=0;i<numV;i++){
         if(arrayFlag[i]==false){
             queue_List.push(i);
-            arrayFlag[i]==true;
+            arrayFlag[i]=true;
         }
-//        for(int j=0;j<numV;j++){
-//            if(i!=j&&arrayV[i][j]==1&&arrayFlag[j]==false){
-//                queue_List.push(j);
-//                arrayFlag[j]==true;
-//            }
-//        }
         bfsAdjacencyMatrix(arrayV,arrayFlag,queue_List,numV);
     }
 }
@@ -118,7 +112,7 @@ void adjacencyMatrix(){
 void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c){
     while(q.empty()!=true){
         int temp=q.front();
-        cout<<temp;
+        cout<<temp<<" ";
         q.pop();
         for(int i=0;i<c;i++){
             if(temp!=i&&arrayV[temp][i]==1&&arrayFlag[i]==false){

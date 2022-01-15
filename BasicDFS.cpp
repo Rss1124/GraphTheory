@@ -49,7 +49,7 @@ void adjacencyList(){
 bool dfsAdjacencyList(Array arrayV[],int num){
     if(arrayV[num].flag==true) return false;
     if(arrayV[num].flag==false){
-        cout<<num;
+        cout<<num<<" ";
         arrayV[num].flag=true;
         for(int i=0;i<arrayV[num].length;i++){
             dfsAdjacencyList(arrayV,arrayV[num].arrayE[i]);
@@ -92,7 +92,10 @@ void adjacencyMatrix(){
     displayAdjacencyMatrix(arrayV,numV);
     cout<<"邻接矩阵生成完毕！"<<endl;
     for(int i=0;i<numV;i++){
-        if(arrayFlag[i]==false) cout<<i;
+        if(arrayFlag[i]==false){
+            cout<<i<<" ";
+            arrayFlag[i]=true;
+        }
         for(int j=0;j<numV;j++){
             if(i!=j) dfsAdjacencyMatrix(arrayV,i,j,arrayFlag,numV);
         }
@@ -103,7 +106,7 @@ bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num){
     if(arrayV[r][c]==0||arrayFlag[c]==true) return false;
     if(arrayV[r][c]==1){
         arrayFlag[c]=true;
-        cout<<c;
+        cout<<c<<" ";
         for(int i=0;i<num;i++){
             dfsAdjacencyMatrix(arrayV,c,i,arrayFlag,num);
         }
