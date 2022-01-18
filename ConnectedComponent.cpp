@@ -121,15 +121,6 @@ void adjacencyMatrix(){
 }
 
 bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num,int arrayColor[],int color){
-//    if(arrayV[r][c]==0||arrayFlag[c]==true) return false;
-//    if(arrayV[r][c]==1){
-//        arrayFlag[c]=true;
-//        arrayColor[c]=color;
-//        cout<<c<<" ";
-//        for(int i=0;i<num;i++){
-//            dfsAdjacencyMatrix(arrayV,c,i,arrayFlag,num,arrayColor,color);
-//        }
-//    }
     for(int c=0;c<num;c++){
         if(arrayV[r][c]==1&&arrayFlag[c]==false){
             arrayFlag[c]=true;
