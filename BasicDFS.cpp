@@ -14,11 +14,11 @@ void adjacencyList();
 bool dfsAdjacencyList(Array arrayV[],int num); //(有向图&&无向图)邻接表的DFS
 void displayAdjacencyMatrix(int **arrayV,int length);
 void adjacencyMatrix();
-bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num); //(有向图&&无向图)邻接矩阵的DFS
+bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num); //(有向图&&无向图)邻接矩阵的DFS
 
 int main() {
-    adjacencyList();
-//    adjacencyMatrix();
+//    adjacencyList();
+    adjacencyMatrix();
 }
 
 void adjacencyList(){
@@ -95,20 +95,17 @@ void adjacencyMatrix(){
         if(arrayFlag[i]==false){
             cout<<i<<" ";
             arrayFlag[i]=true;
-        }
-        for(int j=0;j<numV;j++){
-            if(i!=j) dfsAdjacencyMatrix(arrayV,i,j,arrayFlag,numV);
+            dfsAdjacencyMatrix(arrayV,i,arrayFlag,numV);
         }
     }
 }
 
-bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num){
-    if(arrayV[r][c]==0||arrayFlag[c]==true) return false;
-    if(arrayV[r][c]==1){
-        arrayFlag[c]=true;
-        cout<<c<<" ";
-        for(int i=0;i<num;i++){
-            dfsAdjacencyMatrix(arrayV,c,i,arrayFlag,num);
+bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num){
+    for(int c=0;c<num;c++){
+        if(arrayV[r][c]==1&&arrayFlag[c]==false){
+            cout<<c<<" ";
+            arrayFlag[c]=true;
+            dfsAdjacencyMatrix(arrayV,c,arrayFlag,num);
         }
     }
 }

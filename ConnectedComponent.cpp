@@ -14,11 +14,11 @@ void adjacencyList();
 bool dfsAdjacencyList(Array arrayV[],int num,int arrayColor[],int color); //(有向图&&无向图)邻接表的DFS
 void displayAdjacencyMatrix(int **arrayV,int length);
 void adjacencyMatrix();
-bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num,int arrayColor[],int color); //(有向图&&无向图)邻接矩阵的DFS
+bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num,int arrayColor[],int color); //(有向图&&无向图)邻接矩阵的DFS
 
 int main() {
-    adjacencyList();
-//    adjacencyMatrix();
+//    adjacencyList();
+    adjacencyMatrix();
 }
 
 void adjacencyList(){
@@ -112,9 +112,7 @@ void adjacencyMatrix(){
             cout<<i<<" ";
             arrayFlag[i]=true;
             arrayColor[i]=color;
-        }
-        for(int j=0;j<numV;j++){
-            if(i!=j) dfsAdjacencyMatrix(arrayV,i,j,arrayFlag,numV,arrayColor, color);
+            dfsAdjacencyMatrix(arrayV,i,arrayFlag,numV,arrayColor, color);
         }
     }
     cout<<endl;
@@ -122,14 +120,22 @@ void adjacencyMatrix(){
     for(int i=0;i<numV;i++) cout<<arrayColor[i]<<" ";
 }
 
-bool dfsAdjacencyMatrix(int **arrayV,int r,int c,bool arrayFlag[],int num,int arrayColor[],int color){
-    if(arrayV[r][c]==0||arrayFlag[c]==true) return false;
-    if(arrayV[r][c]==1){
-        arrayFlag[c]=true;
-        arrayColor[c]=color;
-        cout<<c<<" ";
-        for(int i=0;i<num;i++){
-            dfsAdjacencyMatrix(arrayV,c,i,arrayFlag,num,arrayColor,color);
+bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num,int arrayColor[],int color){
+//    if(arrayV[r][c]==0||arrayFlag[c]==true) return false;
+//    if(arrayV[r][c]==1){
+//        arrayFlag[c]=true;
+//        arrayColor[c]=color;
+//        cout<<c<<" ";
+//        for(int i=0;i<num;i++){
+//            dfsAdjacencyMatrix(arrayV,c,i,arrayFlag,num,arrayColor,color);
+//        }
+//    }
+    for(int c=0;c<num;c++){
+        if(arrayV[r][c]==1&&arrayFlag[c]==false){
+            arrayFlag[c]=true;
+            arrayColor[c]=color;
+            cout<<c<<" ";
+            dfsAdjacencyMatrix(arrayV,c,arrayFlag,num,arrayColor,color);
         }
     }
 }
