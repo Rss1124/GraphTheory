@@ -3,19 +3,32 @@
 #include <windows.h>
 using namespace std;
 
+typedef struct Node{
+    int v;
+    int w;
+}Node;
+
+typedef struct Array{
+    Node arrayE[255];
+    int length=0;
+    bool flag=false;
+}Array;
+
 void adjacencyMatrix();
 void displayAdjacencyMatrix(int **arrayV,int length);
-//void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<Node> &q,int c,int arrayDist[]);
 void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c,int arrayDist[]);
+void adjacencyList();
+void displayAdjacencyList(Array arrayV[],int length);
+void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[]);
 
 int main(){
-    adjacencyMatrix();
+    adjacencyList();
+//    adjacencyMatrix();
 }
 
 void adjacencyMatrix(){
 
     double time=0;
-    double counts=0;
     LARGE_INTEGER nFreq;
     LARGE_INTEGER nBeginTime;
     LARGE_INTEGER nEndTime;
@@ -90,6 +103,82 @@ void displayAdjacencyMatrix(int **arrayV,int length){
     for(int i=0;i<length;i++){
         for(int j=0;j<length;j++){
             cout<<arrayV[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+}
+
+void adjacencyList(){
+    queue<int> queue_List;
+    int s=0;
+    int *arrayDist;
+    Array arrayV[255];
+    int numV;
+    cout<<"输入顶点个数:";
+    cin>>numV;
+    arrayDist = new int[numV]{};
+    for(int i=0;i<numV;i++){
+        arrayDist[i]=9999; //初始化dist数组为9999
+    }
+    arrayDist[s]=0;
+    for(int i=0;i<numV;i++){
+        int numE;
+        cout<<"输入与第"<<i<<"号顶点相连的顶点个数:";
+        cin>>numE;
+        for(int j=0;j<numE;j++){
+            int v;
+            int w;
+            cout<<"输入与第"<<i<<"号顶点相连的具体顶点的编号与距离:";
+            cin>>v>>w;
+            arrayV[i].arrayE[j].v=v;
+            arrayV[i].arrayE[j].w=w;
+            arrayV[i].length++;
+            cout<<"第"<<i<<"号顶点与第"<<v<<"号顶点成功相连距离为:"<<w<<endl;
+        }
+    }
+    displayAdjacencyList(arrayV,numV);
+    cout<<"邻接表生成完毕！"<<endl;
+    for(int i=0;i<numV;i++){
+        if(arrayV[i].flag==false){
+            queue_List.push(i);
+            arrayV[i].flag=true;
+            bfsAdjacencyList(arrayV,queue_List,arrayDist);
+        }
+    }
+    for(int i=0;i<numV;i++) cout<<arrayDist[i]<<" ";
+}
+
+void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[]){
+    while(q.empty()==false){
+        int temp=q.front();
+        q.pop();
+        int s=-1;
+        int min=9999;
+        if(arrayV[temp].length!=0){
+            for(int i=0;i<arrayV[temp].length;i++){
+                if(arrayV[arrayV[temp].arrayE[i].v].flag==false){
+                    if(arrayDist[temp]+arrayV[temp].arrayE[i].w<arrayDist[arrayV[temp].arrayE[i].v]){
+                        arrayDist[arrayV[temp].arrayE[i].v]=arrayDist[temp]+arrayV[temp].arrayE[i].w;
+                    }
+                    if(arrayDist[arrayV[temp].arrayE[i].v]<min){
+                        min=arrayDist[arrayV[temp].arrayE[i].v];
+                        s=arrayV[temp].arrayE[i].v;
+                    }
+                }
+            }
+        }
+        if(s!=-1) {
+            q.push(s);
+            arrayV[s].flag=true;
+        }
+    }
+}
+
+void displayAdjacencyList(Array arrayV[],int length){
+    for(int i=0;i<length;i++){
+        cout<<i;
+        for(int j=0;j<arrayV[i].length;j++){
+            cout<<"->("<<arrayV[i].arrayE[j].w<<")"<<arrayV[i].arrayE[j].v;
         }
         cout<<endl;
     }
