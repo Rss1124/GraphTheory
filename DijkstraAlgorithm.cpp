@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <windows.h>
 using namespace std;
 
 void adjacencyMatrix();
@@ -12,6 +13,14 @@ int main(){
 }
 
 void adjacencyMatrix(){
+
+    double time=0;
+    double counts=0;
+    LARGE_INTEGER nFreq;
+    LARGE_INTEGER nBeginTime;
+    LARGE_INTEGER nEndTime;
+    QueryPerformanceFrequency(&nFreq);
+
     int numV;
     cout<<"输入顶点个数:";
     cin>>numV;
@@ -42,28 +51,31 @@ void adjacencyMatrix(){
     cout<<"邻接矩阵生成完毕！"<<endl;
     queue_List.push(s);
     arrayFlag[s]=true;
+
+    QueryPerformanceCounter(&nBeginTime);
     bfsAdjacencyMatrix(arrayV,arrayFlag,queue_List,numV,arrayDist);
+    QueryPerformanceCounter(&nEndTime);
+
     for(int i=0;i<numV;i++) cout<<arrayDist[i]<<" ";
+    cout<<endl;
+    time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
+    cout<<"运行时间:"<<time*1000<<"ms";
 }
 
 void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c,int arrayDist[]){
     while(q.empty()!=true){
         int temp=q.front();
         q.pop();
-        for(int i=0;i<c;i++){
-            if(temp!=i&&arrayV[temp][i]!=0&&arrayFlag[i]==false){
-               if(arrayDist[temp]+arrayV[temp][i]<arrayDist[i]){
-                   arrayDist[i]=arrayDist[temp]+arrayV[temp][i]; //更新dist数组
-               }
-            }
-        }
         int s=-1;
         int min=9999;
         for(int i=0;i<c;i++){
-            if(arrayFlag[i]==false){
-                if(arrayDist[i]<min){
-                    min=arrayDist[i];
-                    s=i;
+            if(temp!=i&&arrayV[temp][i]!=0&&arrayFlag[i]==false){
+                if(arrayDist[temp]+arrayV[temp][i]<arrayDist[i]){
+                    arrayDist[i]=arrayDist[temp]+arrayV[temp][i]; //更新dist数组
+                    if(arrayDist[i]<min){
+                        min=arrayDist[i];
+                        s=i;
+                    }
                 }
             }
         }
