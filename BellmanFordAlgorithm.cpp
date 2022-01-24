@@ -29,11 +29,6 @@ void createEdgeArray(){
         distV[i]=99999;
     }
     distV[0]=0;
-
-//    for(int i=0;i<numV;i++){
-//        cout<<distV[i]<<endl;
-//    }
-
     for(int i=0;i<numE;i++){
         cout<<"输入起点，终点以及两者的距离:";
         cin>>s>>e>>w;
@@ -42,15 +37,10 @@ void createEdgeArray(){
         arrayE[i].w=w;
         cout<<"点"<<s<<"与点"<<e<<"连接成功,距离为:"<<w<<endl;
     }
-
-//    for(int i=0;i<numE;i++){
-//        cout<<arrayE[i].s<<"->"<<arrayE[i].e<<"("<<arrayE[i].w<<")"<<endl;
-//    }
     BF(distV,arrayE,numV,numE);
     for(int i=0;i<numV;i++){
         cout<<distV[i]<<" ";
     }
-
 }
 
 void BF(int distArray[], Edge arrayE[],int numV,int numE){
