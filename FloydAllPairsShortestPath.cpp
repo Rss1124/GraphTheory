@@ -11,7 +11,7 @@ int main(){
 
 void adjacencyMatrix(){
     int numV=7;
-    int graph[7][7]={
+    int graph[7][7]={ //距离矩阵
             {0,12,9999,9999,9999,16,14},
             {12,0,10,9999,9999,7,9999},
             {9999,10,9999,3,5,6,9999},
@@ -20,7 +20,7 @@ void adjacencyMatrix(){
             {16,7,6,9999,2,9999,9},
             {14,9999,9999,9999,8,9,9999}
     };
-    int next[7][7]={
+    int next[7][7]={ //路径矩阵
             {0,1,2,3,4,5,6},
             {0,1,2,3,4,5,6},
             {0,1,2,3,4,5,6},
@@ -50,6 +50,7 @@ void floyd(int graph[][7],int numV,int next[][7]){
         for(int i=0;i<numV;i++){
             for(int j=0;j<numV;j++){
                 if(i!=j&&i!=k&&j!=k&&graph[i][j]>graph[i][k]+graph[k][j]){
+                    /** 如果i->k->j的距离比i->j短，更新距离矩阵和路径矩阵 **/
                     graph[i][j]=graph[i][k]+graph[k][j];
                     next[i][j]=k;
                 }
