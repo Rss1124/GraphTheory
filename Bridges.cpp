@@ -11,8 +11,8 @@ typedef struct Array{
 
 void displayAdjacencyList(Array arrayV[],int length);
 void adjacencyList();
-bool dfsLabel(Array arrayV[],int num,int &value,int arrayColor[],int pre); //(有向图&&无向图)邻接表的DFS
-void findBridge(Array arrayV[],int length,int arrayColor[]);
+bool dfsLabel(Array arrayV[],int num,int &value,int arrayLow[],int arrayID[],int pre,bool inCycle[]); //(有向图&&无向图)邻接表的DFS
+void findBridge(Array arrayV[],int length,int arrayLow[],int arrayID[],bool inCycle[],bool isArt[]);
 
 int main() {
     adjacencyList();
@@ -38,29 +38,53 @@ void adjacencyList(){
     }
     displayAdjacencyList(arrayV,numV);
     cout<<"邻接表生成完毕！染色情况如下:"<<endl;
-    int *arrayColor;
-    arrayColor=new int[numV]{};
+    bool *inCycle;
+    inCycle=new bool[numV]{};
+    int *arrayLow;
+    arrayLow=new int[numV]{};
+    int *arrayID;
+    arrayID=new int[numV]{};
+    bool *isArt;
+    isArt=new bool[numV]{};
     int value=0;
     for(int i=0;i<numV;i++){
-        dfsLabel(arrayV,i,value,arrayColor,0);
+        dfsLabel(arrayV,i,value,arrayLow,arrayID,0,inCycle);
     }
-    for(int i=0;i<numV;i++) cout<<arrayColor[i]<<" ";
+    for(int i=0;i<numV;i++) cout<<arrayID[i]<<" ";
+    cout<<endl;
+    for(int i=0;i<numV;i++) cout<<arrayLow[i]<<" ";
+    cout<<endl;
+    for(int i=0;i<numV;i++) cout<<inCycle[i]<<" ";
     cout<<endl;
     cout<<"割边情况如下:"<<endl;
-    findBridge(arrayV,numV,arrayColor);
+    findBridge(arrayV,numV,arrayLow,arrayID,inCycle,isArt);
+    cout<<"割点情况如下:"<<endl;
+    for(int i=0;i<numV;i++){
+        if(isArt[i]==1) cout<<i<<" ";
+    }
 }
 
-bool dfsLabel(Array arrayV[],int num,int &value,int arrayColor[],int pre){ //num=0 pre=2
+bool dfsLabel(Array arrayV[],int num,int &value,int arrayLow[],int arrayID[],int pre,bool inCycle[]){ //num=0 pre=2
     if(arrayV[num].flag==true){ //case1:访问到“被访问的顶点”且ID[num]比ID[pre]小
-        if(arrayColor[num]<arrayColor[pre]) arrayColor[pre]=arrayColor[num];
+        if(arrayLow[num]<arrayLow[pre]){
+            arrayLow[pre]=arrayLow[num];
+            inCycle[num]=true;
+            inCycle[pre]=true;
+        }
     }
     if(arrayV[num].flag==false){
-        arrayColor[num]=value++;
+        arrayID[num]=value;
+        arrayLow[num]=arrayID[num];
+        value++;
         arrayV[num].flag=true;
         for(int i=0;i<arrayV[num].length;i++){
             if(arrayV[num].arrayE[i]!=pre){ //防止无向图出现以下这种情况 3->2 2->3
-                dfsLabel(arrayV,arrayV[num].arrayE[i],value,arrayColor,num);
-                if(arrayColor[arrayV[num].arrayE[i]]<arrayColor[num]) arrayColor[num]=arrayColor[arrayV[num].arrayE[i]];
+                dfsLabel(arrayV,arrayV[num].arrayE[i],value,arrayLow,arrayID,num,inCycle);
+                if(arrayLow[arrayV[num].arrayE[i]]<arrayLow[num]){
+                    arrayLow[num]=arrayLow[arrayV[num].arrayE[i]];
+                    inCycle[num]=true;
+                    inCycle[arrayV[num].arrayE[i]]=true;
+                }
             }
         }
     }
@@ -76,10 +100,18 @@ void displayAdjacencyList(Array arrayV[],int length){
     }
 }
 
-void findBridge(Array arrayV[],int length,int arrayColor[]){
+void findBridge(Array arrayV[],int length,int arrayLow[],int arrayID[],bool inCycle[],bool isArt[]){
     for(int i=0;i<length;i++){
+        int count=0;
         for(int j=0;j<arrayV[i].length;j++){
-            if(arrayColor[i]<arrayColor[arrayV[i].arrayE[j]]) cout<<i<<"-"<<arrayV[i].arrayE[j]<<endl;
+            if(arrayID[i]<arrayLow[arrayV[i].arrayE[j]]){
+                cout<<i<<"-"<<arrayV[i].arrayE[j]<<endl;
+            }
+            if(arrayLow[i]!=arrayLow[arrayV[i].arrayE[j]]){
+                count++;
+                if(inCycle[i]==1) isArt[i]=1;
+                else if(count>1) isArt[i]=1;
+            }
         }
     }
 }
