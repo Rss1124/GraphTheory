@@ -15,7 +15,7 @@ typedef struct Edge{
 }Edge;
 
 void directedGraph();
-void createAdjacencyListAndEdgeList(int numV,Array array[],vector<Edge>&arrayE,int arrayIn[],int arrayOut[]); //生成邻接表和边表
+void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE,int arrayIn[],int arrayOut[]); //生成邻接表和边表
 void findBeginAndEnd(int &begin,int &end,int arrayIn[],int arrayOut[],int numV); //找欧拉回路的起点和终点
 void findEulerPath(int index,int arrayOut[],Array arrayV[],vector<Edge>&arrayE,int tourV[],int &numE);
 void displayAdjacencyList(Array arrayV[],int length);
@@ -140,4 +140,3 @@ bool checkNext(vector<Edge>&arrayE,int begin,int next){
     }
     return false;
 }
-
