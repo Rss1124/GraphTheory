@@ -6,16 +6,19 @@ typedef struct Heap{
     int ki;
 };
 typedef struct IndexPriorityQueue{
-    int val;
-    int pm;
-    int im;
+    int val=-1;
+    int pm=-1;
+    int im=-1;
 }IPQ;
 
 void initMinHeap(int length,Heap array[]); //初始化小顶堆
-void insert(int &length,int value,IPQ queue[]); //往索引优先队列添加元素
+void push(int &length,int value,IPQ queue[]); //索引优先队列入队操作
+void pop(int &length,int ki,IPQ queue[]); //索引优先队列出队操作
+void update(int ki,int value,IPQ queue[],int length); //更新队列的元素
 void swim(int length,IPQ queue[]); //在堆中插入数据后的上浮操作
-bool smaller(int root,int child,IPQ queue[]); //比较大小
-void swap(int root,int child,IPQ queue[]); //交换queue中的元素
+void sink(int root,IPQ queue[],int length); //在堆中删除数据后的下沉操作
+bool smaller(int i,int j,IPQ queue[]); //比较大小
+void swap(int i,int j,IPQ queue[]); //交换queue中的元素
 
 int main(){
     Heap minHeap[15];
@@ -63,17 +66,20 @@ int main(){
      * 找到minHeap[5]在索引优先队列queue所在的位置: pm=5--->val=4--->ki=11--->im=11
      */
      cout<<"ki-val-pm-im"<<endl;
-    for(int i=0;i<length;i++){
-        cout<<i<<"-"<<queue[i].val<<"-"<<queue[i].pm<<"-"<<queue[i].im<<endl;
-    }
+    for(int i=0;i<length;i++) cout<<"("<<i<<")"<<"-"<<"("<<queue[i].val<<")"<<"-"<<"("<<queue[i].pm<<")"<<"-"<<"("<<queue[i].im<<")"<<endl;
     cout<<endl;
-    insert(length,2,queue);
-    for(int i=0;i<length;i++){
-        cout<<i<<"-"<<queue[i].val<<"-"<<queue[i].pm<<"-"<<queue[i].im<<endl;
-    }
+    push(length,2,queue);
+    for(int i=0;i<length;i++) cout<<"("<<i<<")"<<"-"<<"("<<queue[i].val<<")"<<"-"<<"("<<queue[i].pm<<")"<<"-"<<"("<<queue[i].im<<")"<<endl;
+    cout<<endl;
+    int index=length;
+    pop(length,queue[0].im,queue);
+    for(int i=0;i<index;i++) cout<<"("<<i<<")"<<"-"<<"("<<queue[i].val<<")"<<"-"<<"("<<queue[i].pm<<")"<<"-"<<"("<<queue[i].im<<")"<<endl;
+    cout<<endl;
+    update(2,1,queue,length);
+    for(int i=0;i<index;i++) cout<<"("<<i<<")"<<"-"<<"("<<queue[i].val<<")"<<"-"<<"("<<queue[i].pm<<")"<<"-"<<"("<<queue[i].im<<")"<<endl;
 }
 
-void  initMinHeap(int length,Heap array[]){
+void initMinHeap(int length,Heap array[]){
     bool isSwap=true;
     while(isSwap==true){
         isSwap=false;
@@ -118,7 +124,7 @@ void  initMinHeap(int length,Heap array[]){
     }
 }
 
-void insert(int &length,int value,IPQ queue[]){
+void push(int &length,int value,IPQ queue[]){
     queue[length].val=value;
     queue[length].pm=length;
     queue[length].im=length;
@@ -126,23 +132,52 @@ void insert(int &length,int value,IPQ queue[]){
     length++;
 }
 
+void pop(int &length,int ki,IPQ queue[]){
+    int i=queue[ki].pm;
+    swap(i,length-1,queue);
+    length--;
+    sink(i,queue,length); //i=0,length=12
+    queue[ki].val=-1;
+    queue[ki].pm=-1;
+    queue[length].im=-1;
+}
+
 void swim(int length,IPQ queue[]){
-    for(int i=(length-1)/2;i>0&&smaller(i,length,queue)==true; ){
+    for(int i=(length-1)/2;length>0&&smaller(length,i,queue)==true; ){
         swap(i,length,queue);
         length=i;
         i=(length-1)/2;
     }
 }
 
-bool smaller(int root,int child,IPQ queue[]){
-    if(queue[child].val<queue[root].val) return true;
+void sink(int root,IPQ queue[],int length){ //i=0,length=12
+    while(true){
+        int left=2*root+1;
+        int right=2*root+2;
+        int smallest=left;
+        if(right<length&&smaller(right,left,queue)==true) smallest=right;
+        if(left>=length||smaller(root,smallest,queue)==true) break;
+        swap(smallest,root,queue);
+        root=smallest;
+    }
+}
+
+bool smaller(int i,int j,IPQ queue[]){
+    if(queue[queue[i].im].val<queue[queue[j].im].val) return true; //注意这里要通过heap到queue的映射im来比较大小
     else return false;
 }
 
-void swap(int root,int child,IPQ queue[]){
-    queue[queue[child].im].pm=root;
-    queue[queue[root].im].pm=child;
-    int tmp=queue[root].im;
-    queue[root].im=queue[child].im;
-    queue[child].im=tmp;
+void swap(int i,int j,IPQ queue[]){
+    queue[queue[j].im].pm=i;
+    queue[queue[i].im].pm=j;
+    int tmp=queue[i].im;
+    queue[i].im=queue[j].im;
+    queue[j].im=tmp;
+}
+
+void update(int ki,int value,IPQ queue[],int length){
+    int i=queue[ki].pm; //i=6
+    queue[ki].val=value;
+    sink(i,queue,length);
+    swim(i,queue);
 }
