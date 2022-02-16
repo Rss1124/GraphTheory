@@ -19,6 +19,8 @@ void swim(int length,IPQ queue[]); //在堆中插入数据后的上浮操作
 void sink(int root,IPQ queue[],int length); //在堆中删除数据后的下沉操作
 bool smaller(int i,int j,IPQ queue[]); //比较大小
 void swap(int i,int j,IPQ queue[]); //交换queue中的元素
+void decreaseKey(int ki,int value,IPQ queue[]); //如果更新的元素比原来的小,则执行上浮操作
+void increaseKey(int ki,int value,IPQ queue[],int length); //如果更新的元素比原来的大，则执行下沉操作
 
 int main(){
     Heap minHeap[15];
@@ -180,4 +182,18 @@ void update(int ki,int value,IPQ queue[],int length){
     queue[ki].val=value;
     sink(i,queue,length);
     swim(i,queue);
+}
+
+void decreaseKey(int ki,int value,IPQ queue[]){
+    if(smaller(value,queue[ki].val,queue)){
+        queue[ki].val=value;
+        swim(queue[ki].pm,queue);
+    }
+}
+
+void increaseKey(int ki,int value,IPQ queue[],int length){
+    if(smaller(queue[ki].val,value,queue)){
+        queue[ki].val=value;
+        sink(queue[ki].pm,queue,length);
+    }
 }
