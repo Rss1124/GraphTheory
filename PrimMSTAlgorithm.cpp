@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <windows.h>
 #include <queue>
 using namespace std;
 
@@ -49,9 +50,21 @@ void lazyPrim(){
         }
     }
     int index=0;
+
+    double time=0;
+    LARGE_INTEGER nFreq;
+    LARGE_INTEGER nBeginTime;
+    LARGE_INTEGER nEndTime;
+    QueryPerformanceFrequency(&nFreq);
+
+    QueryPerformanceCounter(&nBeginTime);
     findMSTByLazyPrim(pq,numV,arrayV,arrayE,MST,index);
+    QueryPerformanceCounter(&nEndTime);
+
     cout<<"最小生成树如下:"<<endl;
     for(int i=0;i<numV-1;i++) cout<<MST[i].begin<<"->"<<MST[i].end<<"("<<MST[i].weight<<")"<<endl;
+    time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
+    cout<<"运行时间:"<<time*1000<<"ms";
 }
 
 void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE){
