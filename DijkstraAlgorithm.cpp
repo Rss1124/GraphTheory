@@ -23,8 +23,8 @@ void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]);
 void findPath(int prev[],int end,int numV);
 
 int main(){
-    adjacencyList();
-//    adjacencyMatrix();
+//    adjacencyList();
+    adjacencyMatrix();
 }
 
 void adjacencyMatrix(){
@@ -111,6 +111,12 @@ void displayAdjacencyMatrix(int **arrayV,int length){
 }
 
 void adjacencyList(){
+    double time=0;
+    LARGE_INTEGER nFreq;
+    LARGE_INTEGER nBeginTime;
+    LARGE_INTEGER nEndTime;
+    QueryPerformanceFrequency(&nFreq);
+
     queue<int> queue_List;
     int s=0;
     int *arrayDist;
@@ -145,15 +151,22 @@ void adjacencyList(){
     }
     displayAdjacencyList(arrayV,numV);
     cout<<"邻接表生成完毕！"<<endl;
+
+    QueryPerformanceCounter(&nBeginTime);
     for(int i=0;i<numV;i++){
         if(arrayV[i].flag==false){
             queue_List.push(i);
             arrayV[i].flag=true;
+
+            QueryPerformanceCounter(&nBeginTime);
             bfsAdjacencyList(arrayV,queue_List,arrayDist,prev);
+            QueryPerformanceCounter(&nEndTime);
         }
     }
     for(int i=0;i<numV;i++) cout<<arrayDist[i]<<" ";
     cout<<endl;
+    time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
+    cout<<"运行时间:"<<time*1000<<"ms"<<endl;
     cout<<"最短路径如下:"<<endl;
     for(int e=0;e<numV;e++){
         if(e==s) continue;
