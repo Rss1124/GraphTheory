@@ -12,7 +12,7 @@ typedef struct IndexPriorityQueue{
 }IPQ;
 
 void initMinHeap(int length,Heap array[]); //初始化小顶堆
-void push(int &length,int value,IPQ queue[]); //索引优先队列入队操作
+void push(int ki,int &length,int value,IPQ queue[]); //索引优先队列入队操作
 void pop(int &length,int ki,IPQ queue[]); //索引优先队列出队操作
 void update(int ki,int value,IPQ queue[],int length); //更新队列的元素
 void swim(int length,IPQ queue[]); //在堆中插入数据后的上浮操作
@@ -70,7 +70,7 @@ int main(){
     cout<<"ki-val-pm-im"<<endl;
     for(int i=0;i<length;i++) cout<<"("<<i<<")"<<"-"<<"("<<queue[i].val<<")"<<"-"<<"("<<queue[i].pm<<")"<<"-"<<"("<<queue[i].im<<")"<<endl;
     cout<<endl;
-    push(length,2,queue);
+    push(12,length,2,queue);
     for(int i=0;i<length;i++) cout<<"("<<i<<")"<<"-"<<"("<<queue[i].val<<")"<<"-"<<"("<<queue[i].pm<<")"<<"-"<<"("<<queue[i].im<<")"<<endl;
     cout<<endl;
     int index=length;
@@ -126,10 +126,10 @@ void initMinHeap(int length,Heap array[]){
     }
 }
 
-void push(int &length,int value,IPQ queue[]){
-    queue[length].val=value;
-    queue[length].pm=length;
-    queue[length].im=length;
+void push(int ki,int &length,int value,IPQ queue[]){
+    queue[ki].val=value;
+    queue[ki].pm=length;
+    queue[length].im=ki;
     swim(length,queue);
     length++;
 }
