@@ -19,7 +19,8 @@ void displayAdjacencyMatrix(int **arrayV,int length);
 void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c,int arrayDist[]);
 void adjacencyList();
 void displayAdjacencyList(Array arrayV[],int length);
-void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[]);
+void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]);
+void findPath(int prev[],int end,int numV);
 
 int main(){
     adjacencyList();
@@ -85,6 +86,7 @@ void bfsAdjacencyMatrix(int **arrayV,bool arrayFlag[],queue<int> &q,int c,int ar
             if(temp!=i&&arrayV[temp][i]!=0&&arrayFlag[i]==false){
                 if(arrayDist[temp]+arrayV[temp][i]<arrayDist[i]){
                     arrayDist[i]=arrayDist[temp]+arrayV[temp][i]; //更新dist数组
+
                     if(arrayDist[i]<min){
                         min=arrayDist[i];
                         s=i;
@@ -112,11 +114,16 @@ void adjacencyList(){
     queue<int> queue_List;
     int s=0;
     int *arrayDist;
+    int *arrayMemo;
+    int *prev;
     Array arrayV[255];
     int numV;
     cout<<"输入顶点个数:";
     cin>>numV;
     arrayDist = new int[numV]{};
+    arrayMemo = new int[numV]{};
+    prev = new int[numV]{};
+    arrayMemo[s]=1<<s;
     for(int i=0;i<numV;i++){
         arrayDist[i]=9999; //初始化dist数组为9999
     }
@@ -133,7 +140,7 @@ void adjacencyList(){
             arrayV[i].arrayE[j].v=v;
             arrayV[i].arrayE[j].w=w;
             arrayV[i].length++;
-            cout<<"第"<<i<<"号顶点与第"<<v<<"号顶点成功相连距离为:"<<w<<endl;
+            cout<<"第"<<i<<"号顶点与第"<<v<<"号顶点成功"<<endl;
         }
     }
     displayAdjacencyList(arrayV,numV);
@@ -142,13 +149,21 @@ void adjacencyList(){
         if(arrayV[i].flag==false){
             queue_List.push(i);
             arrayV[i].flag=true;
-            bfsAdjacencyList(arrayV,queue_List,arrayDist);
+            bfsAdjacencyList(arrayV,queue_List,arrayDist,prev);
         }
     }
     for(int i=0;i<numV;i++) cout<<arrayDist[i]<<" ";
+    cout<<endl;
+    cout<<"最短路径如下:"<<endl;
+    for(int e=0;e<numV;e++){
+        if(e==s) continue;
+        cout<<s<<"->"<<e<<":";
+        findPath(prev,e,numV);
+        cout<<endl;
+    }
 }
 
-void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[]){
+void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]){
     while(q.empty()==false){
         int temp=q.front();
         q.pop();
@@ -162,6 +177,7 @@ void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[]){
                     }
                     if(arrayDist[arrayV[temp].arrayE[i].v]<min){
                         min=arrayDist[arrayV[temp].arrayE[i].v];
+                        prev[arrayV[temp].arrayE[i].v]=temp;
                         s=arrayV[temp].arrayE[i].v;
                     }
                 }
@@ -181,5 +197,16 @@ void displayAdjacencyList(Array arrayV[],int length){
             cout<<"->("<<arrayV[i].arrayE[j].w<<")"<<arrayV[i].arrayE[j].v;
         }
         cout<<endl;
+    }
+}
+
+void findPath(int prev[],int end,int numV){
+    for(int i=end;i>=0&&i<numV;){
+        if(i==0){
+            cout<<i;
+            break;
+        }
+        cout<<i<<"-";
+        i=prev[i];
     }
 }
