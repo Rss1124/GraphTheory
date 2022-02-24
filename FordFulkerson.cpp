@@ -6,7 +6,7 @@ typedef struct Edge{
     int end;
     int flow=0;
     int capacity=0;
-    struct Edge *residual;
+    int residualEnd;
 }Edge;
 
 typedef struct ArrayE{
@@ -42,7 +42,7 @@ int main(){
         visitedToken++;
         maxFlow+=f;
     }
-//    cout<<maxFlow;
+    cout<<"maxFlow"<<maxFlow;
 }
 
 void createAdjacencyListAndEdgeList(int numV,ArrayV arrayV[]){
@@ -56,14 +56,14 @@ void createAdjacencyListAndEdgeList(int numV,ArrayV arrayV[]){
             cout<<"输入与第"<<i<<"号顶点相连的具体顶点的编号以及对应的容量:";
             cin>>v>>c;
             Edge e1,e2;
-            e1.begin=i;
-            e1.end=v;
+            e1.begin=i; //i=4
+            e1.end=v; //v=7
             e1.capacity=c;
-            e2.begin=v;
-            e2.end=i;
+            e1.residualEnd=arrayV[v].length;
+            e2.begin=v; //v=7
+            e2.end=i; //i=4
+            e2.residualEnd=arrayV[i].length;
             e2.capacity=0;
-            e1.residual=&e2;
-            e2.residual=&e1;
             arrayV[i].arrayE[j].edge=e1;
             arrayV[i].length++;
             arrayV[v].arrayE[arrayV[v].length].edge=e2;
@@ -79,7 +79,7 @@ void displayAdjacencyList(ArrayV arrayV[],int length){
     for(int i=0;i<length;i++){
         cout<<i;
         for(int j=0;j<arrayV[i].length;j++){
-            cout<<"->"<<arrayV[i].arrayE[j].edge.end<<"("<<arrayV[i].arrayE[j].edge.flow<<"/"<<arrayV[i].arrayE[j].edge.capacity<<")";
+            cout<<"->"<<arrayV[i].arrayE[j].edge.end<<"("<<arrayV[i].arrayE[j].edge.flow<<"/"<<arrayV[i].arrayE[j].edge.capacity<<")"<<"["<<arrayV[i].arrayE[j].edge.residualEnd<<"]";
         }
         cout<<endl;
     }
@@ -87,11 +87,6 @@ void displayAdjacencyList(ArrayV arrayV[],int length){
 
 int remainingCapacity(int capacity,int flow){
     return capacity-flow;
-}
-
-void augment(long bottleNeck,Edge &edge){
-    edge.flow+=bottleNeck;
-//    edge.residual->flow-=bottleNeck;
 }
 
 int dfs(int node,long flow,int t,ArrayV arrayV[],int &visitedToken){
@@ -104,6 +99,7 @@ int dfs(int node,long flow,int t,ArrayV arrayV[],int &visitedToken){
             long bottleNeck= dfs(edge.end,min(flow,remainingCapacity(edge.capacity,edge.flow)),t,arrayV,visitedToken);
             if(bottleNeck>0){
                 arrayV[node].arrayE[i].edge.flow+=bottleNeck;
+                arrayV[edge.end].arrayE[edge.residualEnd].edge.flow-=bottleNeck;
                 return bottleNeck;
             }
         }
