@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 using namespace std;
 
 typedef struct Edge{
@@ -22,11 +23,17 @@ typedef struct ArrayV{
 void createAdjacencyListAndEdgeList(int numV,ArrayV arrayV[]); //生成邻接表
 void displayAdjacencyList(ArrayV arrayV[],int length);
 int remainingCapacity(int capacity,int flow);
-void augment(long bottleNeck,Edge &edge);
 int dfs(int node,long flow,int t,ArrayV arrayV[],int &visitedToken);
 int min(int flow,int remainingCapacity);
 
 int main(){
+
+    double time=0;
+    LARGE_INTEGER nFreq;
+    LARGE_INTEGER nBeginTime;
+    LARGE_INTEGER nEndTime;
+    QueryPerformanceFrequency(&nFreq);
+
     ArrayV arrayV[255];
     int numV;
     cout<<"输入顶点个数:";
@@ -36,13 +43,20 @@ int main(){
     createAdjacencyListAndEdgeList(numV,arrayV);
     cout<<endl;
     int s=0,t=numV-1;
+
+    QueryPerformanceCounter(&nBeginTime);
+
     for(long f=dfs(s,9999,t,arrayV,visitedToken);f!=0;f=dfs(s,9999,t,arrayV,visitedToken)){
-        displayAdjacencyList(arrayV,numV);
-        cout<<endl;
         visitedToken++;
         maxFlow+=f;
     }
-    cout<<"maxFlow"<<maxFlow;
+
+    QueryPerformanceCounter(&nEndTime);
+
+    cout<<"maxFlow:"<<maxFlow<<endl;
+
+    time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
+    cout<<"运行时间:"<<time*1000<<"ms";
 }
 
 void createAdjacencyListAndEdgeList(int numV,ArrayV arrayV[]){
