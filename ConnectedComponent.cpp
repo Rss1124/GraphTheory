@@ -17,8 +17,8 @@ void adjacencyMatrix();
 bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num,int arrayColor[],int color); //(有向图&&无向图)邻接矩阵的DFS
 
 int main() {
-//    adjacencyList();
-    adjacencyMatrix();
+    adjacencyList();
+//    adjacencyMatrix();
 }
 
 void adjacencyList(){
