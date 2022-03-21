@@ -14,7 +14,6 @@ typedef struct Edge{
     bool visited=false;
 }Edge;
 
-void directedGraph();
 void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE,int arrayIn[],int arrayOut[]); //生成邻接表和边表
 void findBeginAndEnd(int &begin,int &end,int arrayIn[],int arrayOut[],int numV); //找欧拉回路的起点和终点
 void findEulerPath(int index,int arrayOut[],Array arrayV[],vector<Edge>&arrayE,int tourV[],int &numE);
@@ -22,10 +21,6 @@ void displayAdjacencyList(Array arrayV[],int length);
 bool checkNext(vector<Edge>&arrayE,int begin,int next);
 
 int main(){
-    directedGraph();
-}
-
-void directedGraph(){
     vector<Edge>arrayE;
     Array arrayV[255];
     int numV;
@@ -75,8 +70,10 @@ void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE,
         cout<<it->begin<<"->"<<it->end<<endl;
     }
     cout<<"边表生成完毕"<<endl;
+    cout<<"入度情况: ";
     for(int i=0;i<numV;i++) cout<<arrayIn[i]<<" ";
     cout<<endl;
+    cout<<"出度情况: ";
     for(int i=0;i<numV;i++) cout<<arrayOut[i]<<" ";
     cout<<endl;
 }
@@ -90,15 +87,15 @@ void findBeginAndEnd(int &begin,int &end,int arrayIn[],int arrayOut[],int numV){
             endState=-1;
             break;
         }
-        else if(arrayOut[i]-arrayIn[i]==1) begin=i,beginState++;
-        else if(arrayIn[i]-arrayOut[i]==1) end=i,endState++;
+        else if(arrayOut[i]-arrayIn[i]==1) begin=i,beginState++; //出发点: 出度-入度=1
+        else if(arrayIn[i]-arrayOut[i]==1) end=i,endState++; //终点: 入度-出度=1
     }
-    if(beginState==0&&endState==0){
+    if(beginState==0&&endState==0){ //判断依据1: 所有顶点的出、入度相等
         begin=0;
         end=0;
         cout<<"有欧拉回路"<<endl;
     }
-    if(beginState==1&&endState==1){
+    if(beginState==1&&endState==1){ //判断依据2: 有且仅有两个顶点的|出度-入度|==1,同时其他顶点的出入度相同
         cout<<"有欧拉路径,起点为:"<<begin<<",终点为:"<<end<<endl;
     }
     if(beginState==-1&&endState==-1) cout<<"没有欧拉路径"<<endl;
