@@ -22,7 +22,7 @@ void createEdgeArray(){
     cin>>numV>>numE;
     Edge *arrayE;
     int *distV;
-    arrayE=new Edge[numE];
+    arrayE=new Edge[numE]; //边表
     distV=new int[numE];
     int s,e,w;
     for(int i=0;i<numV;i++){
@@ -43,6 +43,14 @@ void createEdgeArray(){
     }
 }
 
+
+/**
+ * 对图进行numV-1次松弛操作,得到所有可能的最短路径
+ * @param distArray :最短距离数组,包含了所有顶点的最短距离,最开始除了起点的最短路径为0以外,其他值都是+∞
+ * @param arrayE :边表
+ * @param numV :顶点的个数
+ * @param numE :边的个数
+ */
 void BF(int distArray[], Edge arrayE[],int numV,int numE){
     for(int i=0;i<numV-1;i++){
         for(int j=0;j<numE;j++){
