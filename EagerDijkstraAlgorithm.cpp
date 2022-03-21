@@ -14,6 +14,7 @@ typedef struct ArrayV{
     int flag=false;
 }ArrayV;
 
+/** 存放在IPQ的数据类型,包含顶点间的权值,和顶点的孩子 **/
 typedef struct Dist{
     int next;
     int weight;
@@ -61,6 +62,8 @@ int main(){
     queue[0].dist.next=0;
     queue[0].dist.weight=0;
     createAdjacencyListAndEdgeList(numV,arrayV);
+
+    /** 用与起始点star相邻的顶点对IPQ进行初始化 **/
     int star=0;
     int edgeNum=arrayV[star].length;
     for(int i=0;i<edgeNum;i++){
