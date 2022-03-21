@@ -23,8 +23,8 @@ void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]);
 void findPath(int prev[],int end,int numV);
 
 int main(){
-//    adjacencyList();
-    adjacencyMatrix();
+    adjacencyList();
+//    adjacencyMatrix();
 }
 
 void adjacencyMatrix(){
@@ -174,6 +174,7 @@ void adjacencyList(){
         findPath(prev,e,numV);
         cout<<endl;
     }
+    for(int i=0;i<numV;i++) cout<<prev[i]<<" ";
 }
 
 void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]){
@@ -187,10 +188,10 @@ void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]){
                 if(arrayV[arrayV[temp].arrayE[i].v].flag==false){
                     if(arrayDist[temp]+arrayV[temp].arrayE[i].w<arrayDist[arrayV[temp].arrayE[i].v]){
                         arrayDist[arrayV[temp].arrayE[i].v]=arrayDist[temp]+arrayV[temp].arrayE[i].w;
+                        prev[arrayV[temp].arrayE[i].v]=temp;
                     }
                     if(arrayDist[arrayV[temp].arrayE[i].v]<min){
                         min=arrayDist[arrayV[temp].arrayE[i].v];
-                        prev[arrayV[temp].arrayE[i].v]=temp;
                         s=arrayV[temp].arrayE[i].v;
                     }
                 }
