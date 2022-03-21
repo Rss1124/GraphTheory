@@ -57,6 +57,7 @@ void BF(int distArray[], Edge arrayE[],int numV,int numE){
             if(i==0&&distArray[arrayE[j].s]+arrayE[j].w<distArray[arrayE[j].e]){
                 distArray[arrayE[j].e]=distArray[arrayE[j].s]+arrayE[j].w;
             }
+            // 如果出现负值的情况,将边的终点的最短距离赋值为-∞
             if(i>0&&distArray[arrayE[j].s]+arrayE[j].w<distArray[arrayE[j].e]){
                 distArray[arrayE[j].e]=-9999;
             }
