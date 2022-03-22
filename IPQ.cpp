@@ -60,8 +60,8 @@ int main(){
      * 11 9      4  11
      *
      * 对应关系如下:
-     * pm: 队列到堆的映射
-     * im: 堆到队列的映射
+     * pm: 数组到队列的映射
+     * im: 队列到数组的映射
      *
      * 举例:
      * 找到queue[5]在小顶堆minHeap所在的位置: ki=5--->val=9--->pm=11
@@ -127,9 +127,9 @@ void initMinHeap(int length,Heap array[]){
 }
 
 void push(int ki,int &length,int value,IPQ queue[]){
-    queue[ki].val=value;
-    queue[ki].pm=length;
-    queue[length].im=ki;
+    queue[ki].val=value; //ki:表示数组的下标
+    queue[ki].pm=length; //元素从数组下标ki映射到队列,对应队列下标是length
+    queue[length].im=ki; //元素从队列下标length映射到数组,对应数组下标是ki
     swim(length,queue);
     length++;
 }
