@@ -51,6 +51,8 @@ int main(){
 
     cout<<"maxFlow:"<<maxFlow<<endl;
 
+    displayAdjacencyList(arrayV,numV);
+
     time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
     cout<<"运行时间:"<<time*1000<<"ms";
 }
@@ -104,6 +106,7 @@ int min(int flow,int remainingCapacity){
     else return remainingCapacity;
 }
 
+/** 从原点出发找寻能通往终点的路径 **/
 bool bfs(queue<int> &q,int t,ArrayV arrayV[]){
     while(q.empty()!=true){
         int now=q.front();
@@ -123,6 +126,7 @@ bool bfs(queue<int> &q,int t,ArrayV arrayV[]){
     return false;
 }
 
+/** 根据bfs找到的路径,对其进行逆向遍历,从而更新flow **/
 void findMaxFlow(int s,int t,ArrayV arrayV[],int numV,int &maxFlow){
     queue<int> q;
     q.push(s);
@@ -130,6 +134,7 @@ void findMaxFlow(int s,int t,ArrayV arrayV[],int numV,int &maxFlow){
     while(bfs(q,t,arrayV)==true){
         q=queue<int>();
         int minFlow=99999;
+        /** 找寻路径上的最小flow **/
         for(int endIndex=t;endIndex!=s;){
             int beginIndex=arrayV[endIndex].pre; //0
             Edge edge=arrayV[endIndex].arrayE[beginIndex].edge; //10->7
@@ -139,6 +144,7 @@ void findMaxFlow(int s,int t,ArrayV arrayV[],int numV,int &maxFlow){
             minFlow=min(minFlow, remainingCapacity(residualEdge.capacity,residualEdge.flow));
             endIndex=residualBeginIndex;
         }
+        /** 更新路径上的flow **/
         for(int endIndex=t;endIndex!=s;){
             int beginIndex=arrayV[endIndex].pre; //0
             Edge edge=arrayV[endIndex].arrayE[beginIndex].edge; //10->7
@@ -148,6 +154,7 @@ void findMaxFlow(int s,int t,ArrayV arrayV[],int numV,int &maxFlow){
             arrayV[residualBeginIndex].arrayE[residualEndIndex].edge.flow+=minFlow;
             endIndex=residualBeginIndex;
         }
+        /** 重置顶点的访问情况 **/
         for(int i=0;i<numV;i++){
             arrayV[i].visited=false;
             arrayV[i].pre=-1;
