@@ -1,5 +1,4 @@
 #include <iostream>
-#include <queue>
 using namespace std;
 
 void adjacencyMatrix();
@@ -46,12 +45,12 @@ void adjacencyMatrix(){
 }
 
 void floyd(int graph[][7],int numV,int next[][7]){
-    for(int k=0;k<numV;k++){
-        for(int i=0;i<numV;i++){
-            for(int j=0;j<numV;j++){
+    for(int k=0;k<numV;k++){ //k:中转点
+        for(int i=0;i<numV;i++){ //i:起点
+            for(int j=0;j<numV;j++){ //j:终点
+                /** 如果i->k->j的距离比i->j短，更新"距离矩阵"和"路径矩阵" **/
                 if(i!=j&&i!=k&&j!=k&&graph[i][j]>graph[i][k]+graph[k][j]){
                     if(graph[i][k]+graph[k][j]>1000) graph[i][j]=9999; //＋∞ ± 任何数 = ＋∞
-                        /** 如果i->k->j的距离比i->j短，更新距离矩阵和路径矩阵 **/
                     else graph[i][j]=graph[i][k]+graph[k][j];
                     next[i][j]=k;
                 }
