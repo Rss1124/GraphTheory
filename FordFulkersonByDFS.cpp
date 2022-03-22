@@ -55,6 +55,8 @@ int main(){
 
     cout<<"maxFlow:"<<maxFlow<<endl;
 
+    displayAdjacencyList(arrayV,numV);
+
     time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
     cout<<"运行时间:"<<time*1000<<"ms";
 }
@@ -103,6 +105,9 @@ int remainingCapacity(int capacity,int flow){
     return capacity-flow;
 }
 
+/**
+ * 通过dfs找寻起点到终点的路径,同时找寻其中的minflow,最后在回溯的时候对路径上的flow进行更新
+ */
 int dfs(int node,long flow,int t,ArrayV arrayV[],int &visitedToken){
     if(node==t) return flow;
     arrayV[node].visited=visitedToken;
@@ -110,10 +115,10 @@ int dfs(int node,long flow,int t,ArrayV arrayV[],int &visitedToken){
     for(int i=0;i<length;i++){
         Edge edge=arrayV[node].arrayE[i].edge;
         if(remainingCapacity(edge.capacity,edge.flow)>0&&arrayV[edge.end].visited!=visitedToken){
-            long bottleNeck= dfs(edge.end,min(flow,remainingCapacity(edge.capacity,edge.flow)),t,arrayV,visitedToken);
+            long bottleNeck= dfs(edge.end,min(flow,remainingCapacity(edge.capacity,edge.flow)),t,arrayV,visitedToken); //minflow
             if(bottleNeck>0){
-                arrayV[node].arrayE[i].edge.flow+=bottleNeck;
-                arrayV[edge.end].arrayE[edge.residualEnd].edge.flow-=bottleNeck;
+                arrayV[node].arrayE[i].edge.flow+=bottleNeck; //更新edge上的flow
+                arrayV[edge.end].arrayE[edge.residualEnd].edge.flow-=bottleNeck; //更新residualedge上的flow
                 return bottleNeck;
             }
         }
