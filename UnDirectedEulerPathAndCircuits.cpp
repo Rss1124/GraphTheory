@@ -16,7 +16,7 @@ typedef struct Edge{
 
 void undirectedGraph();
 void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE,int arrayDegree[]); //生成邻接表和边表
-void findBegin(int &begin,int arrayDegree[],int numV); //找欧拉回路的起点和终点
+bool findBegin(int &begin,int arrayDegree[],int numV); //找欧拉回路的起点和终点
 void findEulerPath(int index,int arrayDegree[],Array arrayV[],vector<Edge>&arrayE,int tourV[],int &numE,int pre);
 void displayAdjacencyList(Array arrayV[],int length);
 bool checkNext(vector<Edge>&arrayE,int begin,int next,int arrayDegree[]);
@@ -40,10 +40,11 @@ void undirectedGraph(){
     createAdjacencyListAndEdgeList(numV,arrayV,arrayE,arrayDegree);
     int begin=-1;
     cout<<endl;
-    findBegin(begin,arrayDegree,numV);
-    findEulerPath(begin,arrayDegree,arrayV,arrayE,tourV,numE,-1);
-    cout<<"欧拉路径如下:"<<endl;
-    for(int i=0;i<=temp;i++) cout<<tourV[i]<<" ";
+    if(findBegin(begin,arrayDegree,numV)==true){
+        findEulerPath(begin,arrayDegree,arrayV,arrayE,tourV,numE,-1);
+        cout<<"欧拉路径如下:"<<endl;
+        for(int i=0;i<=temp;i++) cout<<tourV[i]<<" ";
+    }
 }
 
 void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE,int arrayDegree[]){
@@ -72,10 +73,10 @@ void createAdjacencyListAndEdgeList(int numV,Array arrayV[],vector<Edge>&arrayE,
         cout<<it->begin<<"->"<<it->end<<endl;
     }
     cout<<"边表生成完毕"<<endl;
-    for(int i=0;i<numV;i++) cout<<arrayDegree[i]<<" ";
+//    for(int i=0;i<numV;i++) cout<<arrayDegree[i]<<" ";
 }
 
-void findBegin(int &begin,int arrayDegree[],int numV){
+bool findBegin(int &begin,int arrayDegree[],int numV){
     int flag=0;
     for(int i=0;i<numV;i++){
         if(arrayDegree[i]%2!=0){
@@ -85,11 +86,16 @@ void findBegin(int &begin,int arrayDegree[],int numV){
     }
     if(flag==0){ //判断依据1:如果没有"度为奇数"的顶点，则可以从任意点出发，最终一定会回到该点
         cout<<"有欧拉回路"<<endl;
+        return true;
     }
     if(flag==2){ //判断依据1:如果有两个"度为奇数"的顶点，则必须从其中一个奇点出发，另一个奇点终止
         cout<<"有欧拉路径,起点为:"<<begin<<endl;
+        return true;
     }
-    else cout<<"什么都没有"<<endl;
+    else{
+        cout<<"什么都没有"<<endl;
+        return false;
+    }
 }
 
 /** 每次递归回溯的时候,检查顶点的度是否为0,依次来找寻欧拉路径 **/
