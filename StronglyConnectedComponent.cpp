@@ -17,8 +17,8 @@ void adjacencyMatrix();
 bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num,bool arrayIsStack[],stack<int> &s,int arrayColor[]); //(有向图&&无向图)邻接矩阵的DFS
 
 int main() {
-//    adjacencyList(); //邻接表下的Trajan算法找寻有向图的强连通分量
-    adjacencyMatrix(); //邻接矩阵下的Trajan算法找寻有向图的强连通分量
+    adjacencyList(); //邻接表下的Trajan算法找寻有向图的强连通分量
+//    adjacencyMatrix(); //邻接矩阵下的Trajan算法找寻有向图的强连通分量
 }
 
 void adjacencyList(){
@@ -54,29 +54,33 @@ void adjacencyList(){
     for(int i=0;i<numV;i++) cout<<arrayColor[i];
 }
 
+/** tarjan算法:在回溯的时候,对顶点进行染色 **/
 bool dfsAdjacencyList(Array arrayV[],int num,bool arrayFlag[],bool arrayIsStack[],stack<int> &s,int arrayColor[]){
-    if(arrayFlag[num]==true&&arrayIsStack[num]==true) return true; //case1:该结点已经被访问过了，且结点在栈中
-    if(arrayFlag[num]==true&&arrayIsStack[num]==false) return false; //case2:该结点已经被访问过了，且结点不在栈中
+    if(arrayFlag[num]==true) return true; //case1:该结点已经被访问过了
 
     arrayColor[num]=num;
     s.push(num);
     arrayIsStack[num]=true;
 
-    if(arrayFlag[num]==false&&arrayV[num].length==0){ //case3:无路可走
+    if(arrayFlag[num]==false&&arrayV[num].length==0){ //case2:无路可走
         s.pop();
         arrayFlag[num]=true;
         arrayIsStack[num]=false;
         return false;
     }
-    if(arrayFlag[num]==false&&arrayV[num].length!=0){ //case4:有路可走
+    if(arrayFlag[num]==false&&arrayV[num].length!=0){ //case3:有路可走
         arrayFlag[num]=true;
         for(int i=0;i<arrayV[num].length;i++){
             dfsAdjacencyList(arrayV,arrayV[num].arrayE[i],arrayFlag,arrayIsStack,s,arrayColor);
+
+            /** 如果结点在栈中,那么对其进行染色 **/
             if(arrayIsStack[arrayV[num].arrayE[i]]==true){
                 if(arrayColor[arrayV[num].arrayE[i]]<arrayColor[num]) arrayColor[num]=arrayColor[arrayV[num].arrayE[i]];
             }
         }
     }
+
+    /** 防止错误的染色情况 **/
     if(num==arrayColor[num]){
         while(s.top()!=num){
             arrayIsStack[s.top()]=false;
@@ -156,6 +160,8 @@ bool dfsAdjacencyMatrix(int **arrayV,int r,bool arrayFlag[],int num,bool arrayIs
             //case3:顶点c已经遍历过了，并且c不在栈中
         }
     }
+
+    /** 防止错误的染色 **/
     if(r==arrayColor[r]){
         while(s.top()!=r){
             arrayIsStack[s.top()]=false;
