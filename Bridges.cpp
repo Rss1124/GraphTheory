@@ -85,7 +85,7 @@ bool dfsLabel(Array arrayV[],int num,int &value,int arrayLow[],int arrayID[],int
         for(int i=0;i<arrayV[num].length;i++){
             if(arrayV[num].arrayE[i]!=pre){ //防止无向图出现以下这种情况 3->2 2->3
                 dfsLabel(arrayV,arrayV[num].arrayE[i],value,arrayLow,arrayID,num,inCycle);
-                if(arrayLow[arrayV[num].arrayE[i]]<arrayLow[num]){ //case2:回溯过程中发现arrayLow[下一个顶点]比arrayLow[当前顶点]
+                if(arrayLow[arrayV[num].arrayE[i]]<arrayLow[num]){ //case2:回溯过程中发现arrayLow[下一个顶点]比arrayLow[当前顶点]小
                     arrayLow[num]=arrayLow[arrayV[num].arrayE[i]];
                     inCycle[num]=true;
                     inCycle[arrayV[num].arrayE[i]]=true;
