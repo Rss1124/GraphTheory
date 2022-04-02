@@ -157,16 +157,17 @@ void adjacencyList(){
         if(arrayV[i].flag==false){
             queue_List.push(i);
             arrayV[i].flag=true;
-
-            QueryPerformanceCounter(&nBeginTime);
             bfsAdjacencyList(arrayV,queue_List,arrayDist,prev);
-            QueryPerformanceCounter(&nEndTime);
         }
     }
+    QueryPerformanceCounter(&nEndTime);
+
     for(int i=0;i<numV;i++) cout<<arrayDist[i]<<" ";
     cout<<endl;
     time=(double)(nEndTime.QuadPart-nBeginTime.QuadPart)/(double)nFreq.QuadPart;
     cout<<"运行时间:"<<time*1000<<"ms"<<endl;
+    cout<<"prev数组如下:"<<endl;
+    for(int i=0;i<numV;i++) cout<<prev[i]<<" "; //prev数组:每个顶点的前驱顶点
     cout<<"最短路径如下:"<<endl;
     for(int e=0;e<numV;e++){
         if(e==s) continue;
@@ -174,7 +175,6 @@ void adjacencyList(){
         findPath(prev,e,numV);
         cout<<endl;
     }
-    for(int i=0;i<numV;i++) cout<<prev[i]<<" ";
 }
 
 void bfsAdjacencyList(Array arrayV[],queue<int> &q,int arrayDist[],int prev[]){
